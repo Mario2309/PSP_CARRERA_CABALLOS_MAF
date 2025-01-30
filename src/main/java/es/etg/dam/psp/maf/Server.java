@@ -6,9 +6,7 @@ import java.net.Socket;
 import java.util.Random;
 
 public class Server implements Constantes {
-
-    static boolean puntorAlcanzados = true;
-
+    
     public static void main(String[] args) throws IOException, InterruptedException {
         Socket[] clientes = new Socket[PARTICIPANTES_MAX];
         Caballo[] caballos = new Caballo[PARTICIPANTES_MAX];
@@ -16,10 +14,33 @@ public class Server implements Constantes {
 
         ServerSocket server = new ServerSocket(PUERTO);
 
+        establecerConexion(caballos, clientes, gestor, server);
+
+        Thread.sleep(2000);
+
+        while (!comprobarPuntos(caballos)){
+
+            repartirPuntos(caballos);
+
+            notificarPuntos(caballos, gestor, clientes);
+
+        }
+
+        Thread.sleep(2000);
+
+        notificarGanador(caballos, gestor, clientes);
+
+        finalizarConexiones(clientes);
+
+
+    }
+
+    private static void establecerConexion(Caballo[] caballos, Socket[] clientes, GestionMensajes gestor, ServerSocket server) throws IOException {
         for(int i = 0; i < caballos.length; i++){
             if (caballos[i] == null && clientes[i] == null) {
                 Thread clienteThread = new Thread(new Cliente(gestor));
                 clienteThread.start();
+                clienteThread.setName(IDENTIFICADOR+(i+1));
 
                 Socket cliente = server.accept();
 
@@ -33,17 +54,6 @@ public class Server implements Constantes {
                 System.out.println(NO_SE_PUDO_CONECTAR);
             }
         }
-
-        Thread.sleep(2000);
-
-        while (!comprobarPuntos(caballos, gestor, clientes)){
-
-            repartirPuntos(caballos);
-
-            notificarPuntos(caballos, gestor, clientes);
-
-        }
-
     }
 
     private static void finalizarConexiones(Socket[] clientes) throws IOException {
@@ -62,12 +72,10 @@ public class Server implements Constantes {
         }
     }
 
-    private static boolean comprobarPuntos(Caballo[] caballos, GestionMensajes gestor, Socket[] clientes) throws IOException {
+    private static boolean comprobarPuntos(Caballo[] caballos) throws IOException {
         for (int i = 0; i < caballos.length; i++) {
             if (caballos[i].getPuntos() >= 100){
-                notificarGanador(caballos, gestor, clientes);
 
-                finalizarConexiones(clientes);
                 return true;
             }
         }
@@ -77,7 +85,7 @@ public class Server implements Constantes {
     private static void notificarPuntos(Caballo[] caballos, GestionMensajes gestor, Socket[] clientes) throws IOException {
         for (int i = 0; i < caballos.length; i++) {
             gestor.enviar(clientes[i], EL_CABALLO + caballos[i].getNombre() +
-                    CABALLO_PUNTUO + String.valueOf(caballos[i].getPuntos()) + PUNTOS);
+                    CABALLO_PUNTUO + caballos[i].getPuntos() + PUNTOS);
         }
     }
 
@@ -87,10 +95,10 @@ public class Server implements Constantes {
         }
     }
 
-    private static int numRandom(int min, int max){
-        Random rdm = new Random();
-        return rdm.nextInt(min, max);
+        private static int numRandom(int min, int max){
+            Random rdm = new Random();
+            return rdm.nextInt(min, max);
 
-    }
+        }
 
 }

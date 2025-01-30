@@ -1,11 +1,12 @@
 package es.etg.dam.psp.maf;
 
-public class Caballo implements Constantes{
+public class Caballo implements Constantes {
 
     private final String nombre;
     private int puntos;
 
-    public Caballo(String nombre){
+
+    public Caballo(String nombre) {
         this.nombre = nombre;
     }
 
@@ -20,4 +21,5 @@ public class Caballo implements Constantes{
     public String getNombre() {
         return nombre;
     }
+
 }

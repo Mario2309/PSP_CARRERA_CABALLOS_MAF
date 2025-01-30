@@ -13,4 +13,5 @@ public interface Constantes {
     String CABALLO_PUNTUO = " puntuó: ";
     String PUNTOS = " puntos.";
     String NO_SE_PUDO_CONECTAR = "No se pudo conectar";
+    String IDENTIFICADOR = "Cliente ";
 }

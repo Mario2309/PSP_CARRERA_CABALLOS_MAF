@@ -8,12 +8,16 @@ public class GestionMensajes {
     public void enviar(Socket cliente, String msg) throws IOException {
         OutputStream aux = cliente.getOutputStream();
         DataOutputStream output = new DataOutputStream(aux);
-        output.writeUTF(msg);
+        if (!msg.isEmpty()) {
+            output.writeUTF(msg);
+            output.flush();
+        }
     }
 
     public String recibirMSG(Socket cliente) throws IOException {
         InputStream aux = cliente.getInputStream();
         DataInputStream input = new DataInputStream(aux);
-        return input.readUTF();
+        String msg = input.readUTF();
+        return msg;
     }
 }
