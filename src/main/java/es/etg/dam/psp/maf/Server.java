@@ -36,20 +36,14 @@ public class Server implements Constantes {
 
         Thread.sleep(2000);
 
-        puntorAlcanzados = false;
-        while (!puntorAlcanzados){
+        while (!comprobarPuntos(caballos, gestor, clientes)){
 
             repartirPuntos(caballos);
 
             notificarPuntos(caballos, gestor, clientes);
 
-            comprobarPuntos(caballos);
-
         }
 
-        notificarGanador(caballos, gestor, clientes);
-
-        finalizarConexiones(clientes);
     }
 
     private static void finalizarConexiones(Socket[] clientes) throws IOException {
@@ -68,14 +62,16 @@ public class Server implements Constantes {
         }
     }
 
-    private static void comprobarPuntos(Caballo[] caballos) {
+    private static boolean comprobarPuntos(Caballo[] caballos, GestionMensajes gestor, Socket[] clientes) throws IOException {
         for (int i = 0; i < caballos.length; i++) {
             if (caballos[i].getPuntos() >= 100){
-                puntorAlcanzados = true;
-            } else {
-                puntorAlcanzados = false;
+                notificarGanador(caballos, gestor, clientes);
+
+                finalizarConexiones(clientes);
+                return true;
             }
         }
+        return false;
     }
 
     private static void notificarPuntos(Caballo[] caballos, GestionMensajes gestor, Socket[] clientes) throws IOException {
