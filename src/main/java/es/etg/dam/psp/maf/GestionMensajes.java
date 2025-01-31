@@ -17,7 +17,6 @@ public class GestionMensajes {
     public String recibirMSG(Socket cliente) throws IOException {
         InputStream aux = cliente.getInputStream();
         DataInputStream input = new DataInputStream(aux);
-        String msg = input.readUTF();
-        return msg;
+        return input.readUTF();
     }
 }
