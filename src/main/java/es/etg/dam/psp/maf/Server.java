@@ -35,7 +35,7 @@ public class Server implements Constantes {
                 notificarPuntos(caballos, gestor, clientes, idCaballo);
 
 
-            } while (comprobarPuntos(caballos, idCaballo) != true);
+            } while (!comprobarPuntos(caballos, idCaballo));
 
             notificarGanador(caballos, gestor, clientes);
 
@@ -50,10 +50,7 @@ public class Server implements Constantes {
     }
 
     public static boolean comprobarPuntos(Caballo[] caballos, int idCaballo){
-        if (caballos[idCaballo].getPuntos() >= 100) {
-            return true;
-        }
-        return false;
+        return caballos[idCaballo].getPuntos() >= 100;
     }
 
     private static void conexiones(Caballo[] caballos, Socket[] clientes, GestionMensajes gestor, ServerSocket servidor)
